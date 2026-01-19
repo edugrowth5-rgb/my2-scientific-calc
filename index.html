@@ -4,63 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoreByte Scientific Pro</title>
+    <link rel="manifest" href="manifest.json">
     <style>
-        * { box-sizing: border-box; font-family: 'Arial', sans-serif; }
-        body { background-color: #f0f8ff; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        
-        .calc-body { background: #fff; width: 350px; padding: 20px; border-radius: 30px; border: 2px solid #ddd; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        
-        .screen { background: #e0e0e0; height: 100px; border-radius: 15px; margin-bottom: 20px; display: flex; align-items: center; justify-content: flex-end; padding: 20px; font-size: 3rem; color: #555; overflow: hidden; }
-
-        .btn-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        
-        button { height: 60px; border-radius: 12px; border: none; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.2s; background: #333; color: white; }
-        button:active { transform: scale(0.95); opacity: 0.8; }
-
-        /* रंगों का तालमेल (फोटो के अनुसार) */
-        .btn-orange { background: #ff9500; color: white; font-size: 1.5rem; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .calc-body { background: #ffffff; width: 100%; max-width: 380px; padding: 25px; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border: 1px solid #eee; }
+        .screen { background: #f0f0f0; height: 110px; border-radius: 20px; margin-bottom: 25px; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; padding: 20px; overflow: hidden; position: relative; }
+        #display { font-size: 2.8rem; color: #333; font-weight: 500; }
+        #sub-display { font-size: 1rem; color: #888; position: absolute; top: 10px; right: 20px; }
+        .btn-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        button { height: 62px; border-radius: 15px; border: none; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: 0.2s; background: #333333; color: white; display: flex; align-items: center; justify-content: center; }
+        button:active { transform: scale(0.92); filter: brightness(1.2); }
+        .btn-orange { background: #ff9500; color: white; font-size: 1.4rem; }
         .btn-red { background: #ff5e5e; color: white; }
-        .btn-green { background: #00ff9d; color: #333; grid-column: span 2; font-size: 2rem; }
-        .btn-sci { color: #00ff9d; } /* sin, cos, tan के लिए */
-        .btn-gray { background: #444; color: #ff9500; } /* GT, MRC के लिए */
-
-        .footer { text-align: center; margin-top: 20px; border-top: 1px solid #ddd; padding-top: 10px; font-size: 0.8rem; color: #666; }
+        .btn-green { background: #00ff9d; color: #004d33; grid-column: span 2; font-size: 1.8rem; }
+        .btn-sci { color: #00ff9d; background: #2a2a2a; font-size: 0.9rem; }
+        .btn-gray { background: #444444; color: #ff9500; font-size: 0.85rem; }
+        .footer { text-align: center; margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px; font-size: 0.8rem; color: #999; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <div class="calc-body">
-    <div class="screen" id="display">0</div>
+    <div class="screen">
+        <div id="sub-display"></div>
+        <div id="display">0</div>
+    </div>
     
     <div class="btn-grid">
-        <button class="btn-gray" onclick="showGT()">GT</button>
-        <button class="btn-sci" onclick="alert('Check feature coming soon')">◀ CHK</button>
-        <button class="btn-sci" onclick="alert('Check feature coming soon')">CHK ▶</button>
+        <button class="btn-gray" onclick="getGT()">GT</button>
+        <button class="btn-sci" onclick="alert('Review mode on')">◀ CHK</button>
+        <button class="btn-sci" onclick="alert('Review mode on')">CHK ▶</button>
         <button class="btn-gray">MU</button>
-        <button class="btn-red" onclick="clearAll()">AC</button>
+        <button class="btn-red" onclick="allClear()">AC</button>
 
-        <button class="btn-gray" onclick="memoryRecall()">MRC</button>
-        <button class="btn-gray" onclick="memMinus()">M-=</button>
-        <button class="btn-gray" onclick="memPlus()">M+=</button>
+        <button class="btn-gray" onclick="memRecall()">MRC</button>
+        <button class="btn-gray" onclick="memOp('-')">M-=</button>
+        <button class="btn-gray" onclick="memOp('+')">M+=</button>
         <button class="btn-orange" onclick="append('%')">%</button>
         <button class="btn-orange" onclick="backspace()">⌫</button>
 
-        <button class="btn-sci" onclick="sci('sin')">sin</button>
-        <button class="btn-sci" onclick="sci('cos')">cos</button>
-        <button class="btn-sci" onclick="sci('tan')">tan</button>
-        <button class="btn-sci" onclick="sci('sqrt')">√</button>
+        <button class="btn-sci" onclick="sciOp('sin')">sin</button>
+        <button class="btn-sci" onclick="sciOp('cos')">cos</button>
+        <button class="btn-sci" onclick="sciOp('tan')">tan</button>
+        <button class="btn-sci" onclick="sciOp('sqrt')">√</button>
         <button class="btn-orange" onclick="append('/')">÷</button>
 
         <button onclick="num('7')">7</button>
         <button onclick="num('8')">8</button>
         <button onclick="num('9')">9</button>
-        <button class="btn-sci">±</button>
+        <button class="btn-sci" onclick="plusMinus()">±</button>
         <button class="btn-orange" onclick="append('*')">×</button>
 
         <button onclick="num('4')">4</button>
         <button onclick="num('5')">5</button>
         <button onclick="num('6')">6</button>
-        <button class="btn-sci" onclick="sci('pi')">π</button>
+        <button class="btn-sci" onclick="num('3.1415')">π</button>
         <button class="btn-orange" onclick="append('-')">-</button>
 
         <button onclick="num('1')">1</button>
@@ -71,71 +70,92 @@
 
         <button style="grid-column: span 2;" onclick="num('0')">0</button>
         <button onclick="num('.')">.</button>
-        <button class="btn-green" onclick="calculate()">=</button>
+        <button class="btn-green" onclick="solve()">=</button>
     </div>
-
-    <div class="footer">
-        © 2026 | Developed by: <b>CoreByte-Code™</b>
-    </div>
+    <div class="footer">© 2026 | Developed by: <b>CoreByte-Code™</b></div>
 </div>
 
 <script>
-    let display = document.getElementById('display');
-    let gtStack = 0; // असली Grand Total यहाँ जमा होगा
-    let currentInput = "";
-    let isNewSession = true;
+    let mainDisp = document.getElementById('display');
+    let subDisp = document.getElementById('sub-display');
+    let gtMemory = 0;
+    let currentMem = 0;
+    let shouldReset = false;
 
     function num(v) {
-        if (isNewSession || display.innerText === "0") {
-            display.innerText = v;
-            isNewSession = false;
+        if (mainDisp.innerText === "0" || shouldReset) {
+            mainDisp.innerText = v;
+            shouldReset = false;
         } else {
-            display.innerText += v;
+            mainDisp.innerText += v;
         }
     }
 
     function append(op) {
-        display.innerText += op;
-        isNewSession = false;
+        if(shouldReset) shouldReset = false;
+        mainDisp.innerText += op;
     }
 
-    function clearAll() {
-        display.innerText = "0";
-        gtStack = 0; // AC दबाने पर GT साफ़ होगा
-        isNewSession = true;
+    function allClear() {
+        mainDisp.innerText = "0";
+        subDisp.innerText = "";
+        gtMemory = 0;
+        shouldReset = false;
     }
 
     function backspace() {
-        display.innerText = display.innerText.slice(0, -1) || "0";
+        mainDisp.innerText = mainDisp.innerText.slice(0, -1) || "0";
     }
 
-    function calculate() {
+    function solve() {
         try {
-            let result = eval(display.innerText.replace('×', '*').replace('÷', '/'));
-            gtStack += result; // हर बराबर के बाद GT में वैल्यू जुड़ती है
-            display.innerText = result;
-            isNewSession = true;
+            let expr = mainDisp.innerText.replace(/×/g, '*').replace(/÷/g, '/');
+            // Percentage Handling: 700*10% -> 700*10/100
+            expr = expr.replace(/(\d+)%/g, "($1/100)");
+            
+            let result = eval(expr);
+            gtMemory += result; // GT में रिजल्ट जोड़ें
+            subDisp.innerText = mainDisp.innerText + " =";
+            mainDisp.innerText = Number.isInteger(result) ? result : result.toFixed(4);
+            shouldReset = true;
         } catch {
-            display.innerText = "Error";
-            isNewSession = true;
+            mainDisp.innerText = "Error";
+            shouldReset = true;
         }
     }
 
-    function showGT() {
-        display.innerText = gtStack;
-        isNewSession = true;
+    function getGT() {
+        mainDisp.innerText = gtMemory;
+        subDisp.innerText = "Grand Total";
+        shouldReset = true;
     }
 
-    function sci(type) {
-        let val = parseFloat(display.innerText);
-        if(type === 'sin') display.innerText = Math.sin(val * Math.PI / 180).toFixed(4);
-        if(type === 'cos') display.innerText = Math.cos(val * Math.PI / 180).toFixed(4);
-        if(type === 'tan') display.innerText = Math.tan(val * Math.PI / 180).toFixed(4);
-        if(type === 'sqrt') display.innerText = Math.sqrt(val).toFixed(4);
-        if(type === 'pi') display.innerText = Math.PI.toFixed(4);
-        isNewSession = true;
+    function memOp(type) {
+        let val = parseFloat(mainDisp.innerText) || 0;
+        if(type === '+') currentMem += val;
+        else currentMem -= val;
+        shouldReset = true;
+    }
+
+    function memRecall() {
+        mainDisp.innerText = currentMem;
+        shouldReset = true;
+    }
+
+    function sciOp(type) {
+        let val = parseFloat(mainDisp.innerText) || 0;
+        let res = 0;
+        if(type === 'sin') res = Math.sin(val * Math.PI / 180);
+        if(type === 'cos') res = Math.cos(val * Math.PI / 180);
+        if(type === 'tan') res = Math.tan(val * Math.PI / 180);
+        if(type === 'sqrt') res = Math.sqrt(val);
+        mainDisp.innerText = res.toFixed(4);
+        shouldReset = true;
+    }
+
+    function plusMinus() {
+        mainDisp.innerText = parseFloat(mainDisp.innerText) * -1;
     }
 </script>
-
 </body>
 </html>
